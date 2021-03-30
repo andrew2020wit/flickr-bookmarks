@@ -1,1 +1,40 @@
 <p>bookmarks works!</p>
+<div class="content">
+  <div fxLayout="row wrap" fxLayoutGap="16px grid">
+    <div
+      fxFlex="25%"
+      fxFlex.xs="100%"
+      fxFlex.sm="50%"
+      fxFlex.md="25%"
+      fxFlex.lg="20%"
+      *ngFor="let bookmark of bookmarksArr"
+    >
+      <mat-card class="photo-card">
+        <img
+          mat-card-image
+          [src]="bookmark.url"
+          [alt]="bookmark.title"
+          height="200px"
+          width="300px"
+        />
+        <mat-card-content>
+          <p style="height: 3em; overflow: hidden; text-overflow: clip">
+            {{ bookmark.title }}
+          </p>
+          <p style="height: 3em; overflow: hidden; text-overflow: clip">
+            <strong>Tags: </strong> {{ bookmark.tags }}
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button
+            mat-button
+            color="primary"
+            (click)="delBookmarks(bookmark.id)"
+          >
+            Remove it!
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

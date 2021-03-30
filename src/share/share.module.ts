@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -23,12 +24,12 @@ const materialModules = [
 
 const modules1 = [FormsModule, HttpClientModule];
 
-const extModules = [];
+const extModules = [FlexLayoutModule];
 
 @NgModule({
   declarations: [],
   providers: [],
-  imports: [...materialModules, ...modules1, ...extModules],
+  imports: [...materialModules, ...modules1],
   exports: [...materialModules, ...modules1, ...extModules],
 })
 export class ShareModule {}

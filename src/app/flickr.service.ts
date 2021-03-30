@@ -4,17 +4,19 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { flickrApiKey } from 'src/flickr-api-key';
 
-export interface FlickrQuery {
+export interface IFlickrQuery {
   sample: string;
   page: number;
 }
 
-export interface FlickrPhoto {
+export interface IFlickrPhoto {
   url: string;
   title: string;
+  id: string;
+  tags: string;
 }
 
-export interface FlickrPhotoResponse {
+export interface IFlickrPhotoResponse {
   farm: string;
   id: string;
   secret: string;
@@ -22,12 +24,12 @@ export interface FlickrPhotoResponse {
   title: string;
 }
 
-export interface FlickrResponse {
+export interface IFlickrResponse {
   photos: {
     page: number;
     pages: number;
     perpage: number;
-    photo: FlickrPhotoResponse[];
+    photo: IFlickrPhotoResponse[];
     total: string;
   };
   stat: string;
@@ -41,23 +43,27 @@ export interface FlickrResponse {
 export class FlickrService {
   constructor(private http: HttpClient) {}
 
-  getPhotos(flickrQuery: FlickrQuery): Observable<FlickrPhoto[]> {
+  getPhotos(
+    flickrQuery: IFlickrQuery
+  ): Observable<{ flickrPhotos: IFlickrPhoto[]; pages: number }> {
     const url =
       'https://www.flickr.com/services/rest/?method=flickr.photos.search';
     const params = `&api_key=${flickrApiKey}&text=${flickrQuery.sample}`;
     const params2 = `&format=json&nojsoncallback=1&per_page=12&page=${flickrQuery.page}`;
     return this.http.get(url + params + params2).pipe(
-      map((response: FlickrResponse) => {
+      map((response: IFlickrResponse) => {
         console.log('FlickrResponse: ', response);
-        const result: FlickrPhoto[] = [];
-        response.photos.photo.forEach((ph: FlickrPhotoResponse) => {
+        const flickrPhotos: IFlickrPhoto[] = [];
+        response.photos.photo.forEach((ph: IFlickrPhotoResponse) => {
           const photoObj = {
             url: `https://live.staticflickr.com/${ph.server}/${ph.id}_${ph.secret}_z.jpg`,
             title: ph.title,
+            id: ph.id,
+            tags: '',
           };
-          result.push(photoObj);
+          flickrPhotos.push(photoObj);
         });
-        return result;
+        return { flickrPhotos, pages: response.photos.pages };
       })
     );
   }

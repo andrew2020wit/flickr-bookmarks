@@ -1,37 +1,75 @@
 <form>
   <mat-form-field style="width: 100%">
-    <mat-label>Find images</mat-label>
+    <mat-label> type text here!</mat-label>
     <input
       matInput
       name="sample"
       [(ngModel)]="sample"
       id="filterInput"
       type="text"
-      placeholder="Find images"
+      placeholder="sample"
     />
   </mat-form-field>
 </form>
 <div>
-  <div class="photo-viewer">
-    <button mat-button color="primary">< Back</button
-    ><button mat-button color="primary">Page 1</button
-    ><button mat-button color="primary">Forward ></button>
-  </div>
   <div>
-    <mat-grid-list cols="4">
-      <mat-grid-tile *ngFor="let photo of photos">
+    <button mat-button color="primary" [disabled]="page < 2" (click)="back()">
+      < Back</button
+    >Page <strong> {{ page }} </strong> from <strong> {{ allPages }} </strong>
+    <button
+      mat-button
+      color="primary"
+      [disabled]="page >= allPages"
+      (click)="forward()"
+    >
+      Forward >
+    </button>
+  </div>
+  <div style="color: red" *ngIf="allPages == 0">Nothing found...</div>
+  <div class="content">
+    <div fxLayout="row wrap" fxLayoutGap="16px grid">
+      <div
+        fxFlex="25%"
+        fxFlex.xs="100%"
+        fxFlex.sm="50%"
+        fxFlex.md="25%"
+        fxFlex.lg="20%"
+        *ngFor="let photo of photos"
+      >
         <mat-card class="photo-card">
-          <img mat-card-image [src]="photo.url" [alt]="photo.title" />
+          <img
+            mat-card-image
+            [src]="photo.url"
+            [alt]="photo.title"
+            height="200px"
+            width="300px"
+          />
           <mat-card-content>
-            <p>
+            <p style="height: 3em; overflow: hidden; text-overflow: clip">
               {{ photo.title }}
             </p>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-button>LIKE</button>
+            <button mat-button color="primary" (click)="setBookmarks(photo.id)">
+              Bookmarks it!
+            </button>
+
+            <form>
+              <mat-form-field style="width: 100%">
+                <mat-label>Some tags...</mat-label>
+                <input
+                  matInput
+                  [id]="photo.id"
+                  [name]="photo.id"
+                  [(ngModel)]="tags[photo.id]"
+                  type="text"
+                  placeholder="Some tags..."
+                />
+              </mat-form-field>
+            </form>
           </mat-card-actions>
         </mat-card>
-      </mat-grid-tile>
-    </mat-grid-list>
+      </div>
+    </div>
   </div>
 </div>
