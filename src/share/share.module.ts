@@ -29,7 +29,7 @@ const extModules = [FlexLayoutModule];
 @NgModule({
   declarations: [],
   providers: [],
-  imports: [...materialModules, ...modules1],
+  imports: [...materialModules, ...modules1, ...extModules],
   exports: [...materialModules, ...modules1, ...extModules],
 })
 export class ShareModule {}
