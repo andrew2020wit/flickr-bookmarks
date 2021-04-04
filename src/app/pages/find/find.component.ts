@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { fromEvent, Observable } from 'rxjs';
+import { fromEvent, Observable, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { BookmarksService } from 'src/app/bookmarks.service';
 import { FlickrService, IFlickrPhoto } from 'src/app/flickr.service';
@@ -20,6 +20,8 @@ export class FindComponent implements OnInit, OnDestroy, AfterViewInit {
   filterInput: Element;
   filterInputKeyUp: Observable<Event>;
 
+  subscriptions: Subscription[] = [];
+
   constructor(
     private flickrService: FlickrService,
     private bookmarksService: BookmarksService
@@ -34,9 +36,11 @@ export class FindComponent implements OnInit, OnDestroy, AfterViewInit {
       'keyup'
     ) as Observable<Event>;
 
-    this.filterInputKeyUp
-      .pipe(debounceTime(1000))
-      .subscribe(() => this.search());
+    this.subscriptions.push(
+      this.filterInputKeyUp
+        .pipe(debounceTime(1000))
+        .subscribe(() => this.search())
+    );
   }
 
   search() {
@@ -85,5 +89,7 @@ export class FindComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getPhotos();
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.subscriptions.forEach((item: Subscription) => item.unsubscribe());
+  }
 }
